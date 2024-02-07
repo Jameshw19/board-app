@@ -5,6 +5,7 @@ import { api } from "@/convex/_generated/api";
 import { EmptyBoards } from "./empty-boards";
 import { EmptyFavourites } from "./empty-favourites";
 import { EmptySearch } from "./empty-search";
+import { BoardCard } from "./board-card";
 
 interface BoardListProps {
   orgId: string;
