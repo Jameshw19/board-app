@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton";
+"use client"
 
 export const Info = () => {
   return (
