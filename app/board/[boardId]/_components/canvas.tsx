@@ -2,7 +2,14 @@
 
 import { useCallback, useState } from "react";
 
-import { Camera, CanvasMode, CanvasState } from "@/types/canvas";
+import {
+  Camera,
+  CanvasMode,
+  CanvasState,
+  Colour,
+  LayerType,
+  Point,
+} from "@/types/canvas";
 
 import { Info } from "./info";
 import { Participants } from "./participants";
@@ -12,25 +19,56 @@ import {
   useCanUndo,
   useHistory,
   useMutation,
+  useStorage,
 } from "@/liveblocks.config";
 import { CursorsPresence } from "./cursors-presence";
 import { pointerEventToCanvasPoint } from "@/lib/utils";
 
 // import { useSelf } from "@/liveblocks.config";
 
+const MAX_LAYERS = 100;
+
 interface CanvasProps {
   boardId: string;
 }
 
 export const Canvas = ({ boardId }: CanvasProps) => {
+  const layerIds = useStorage((root) => root.layerIds);
+
   const [canvasState, setCanvasState] = useState<CanvasState>({
     mode: CanvasMode.None,
   });
   const [camera, setCamera] = useState<Camera>({ x: 0, y: 0 });
+  const [lastUsedColour, setLastUsedColour] = useState<Colour>({
+    r: 0,
+    g: 0,
+    b: 0,
+  });
 
   const history = useHistory();
   const canRedo = useCanRedo();
   const canUndo = useCanUndo();
+
+  const insertLayer = useMutation(
+    (
+      { storage, setMyPresence },
+      LayerType:
+        | LayerType.Ellipse
+        | LayerType.Rectangle
+        | LayerType.Text
+        | LayerType.Note,
+      position: Point
+    ) => {
+      const liveLayers = storage.get("layers");
+      if (liveLayers.size >= MAX_LAYERS) {
+        return;
+      }
+
+      const liveLayerIds = storage.get("layerIds");
+      const layerId = 0;
+    },
+    []
+  );
 
   const onWheel = useCallback((e: React.WheelEvent) => {
     setCamera((camera) => ({
@@ -74,7 +112,11 @@ export const Canvas = ({ boardId }: CanvasProps) => {
         onPointerMove={onPointerMove}
         onPointerLeave={onPointerLeave}
       >
-        <g>
+        <g
+          style={{
+            transform: `translate${camera.x}px, ${camera.y}px`,
+          }}
+        >
           <CursorsPresence />
         </g>
       </svg>
