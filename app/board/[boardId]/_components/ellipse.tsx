@@ -21,7 +21,7 @@ export const Ellipse = ({
       style={{
         transform: `translate(
             ${layer.x}px,
-            ${layer.y}px,
+            ${layer.y}px
         )`,
       }}
       cx={layer.width / 2}
